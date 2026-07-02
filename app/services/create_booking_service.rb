@@ -30,7 +30,8 @@ class CreateBookingService
     normalized_booking_date = normalize_booking_date
     return failure("Booking date is invalid") if normalized_booking_date.blank?
 
-    quantities_by_ticket_type_id = normalize_ticket_selections
+    quantities_by_ticket_type_id, selection_errors = normalize_ticket_selections
+    return failure(selection_errors) if selection_errors.any?
     return failure("Ticket selections can't be blank") if quantities_by_ticket_type_id.blank?
 
     result = nil
@@ -79,14 +80,23 @@ class CreateBookingService
   end
 
   def normalize_ticket_selections
-    Array(ticket_selections).each_with_object(Hash.new(0)) do |selection, quantities|
+    errors = []
+    quantities = Array(ticket_selections).each_with_object(Hash.new(0)) do |selection, memo|
       ticket_type_id = selection[:ticket_type_id] || selection["ticket_type_id"]
       quantity = selection[:quantity] || selection["quantity"]
 
       next if ticket_type_id.blank?
 
-      quantities[ticket_type_id.to_i] += quantity.to_i
-    end.select { |_ticket_type_id, quantity| quantity.positive? }
+      quantity = quantity.to_i
+      if quantity <= 0
+        errors << "Ticket type #{ticket_type_id} quantity must be greater than 0"
+        next
+      end
+
+      memo[ticket_type_id.to_i] += quantity
+    end
+
+    [quantities, errors]
   end
 
   def validate_ticket_types(event:, ticket_types:, quantities_by_ticket_type_id:, booking_date:)

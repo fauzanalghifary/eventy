@@ -87,6 +87,36 @@ RSpec.describe CreateBookingService do
       expect(result.errors).to include("Adult has only 2 tickets remaining")
     end
 
+    it "rejects zero quantity ticket selections" do
+      expect do
+        result = described_class.new(
+          event_id: event.id,
+          booking_date: booking_date,
+          ticket_selections: [
+            { ticket_type_id: adult_ticket.id, quantity: 0 }
+          ]
+        ).call
+
+        expect(result).not_to be_success
+        expect(result.errors).to include("Ticket type #{adult_ticket.id} quantity must be greater than 0")
+      end.not_to change(Booking, :count)
+    end
+
+    it "rejects negative quantity ticket selections" do
+      expect do
+        result = described_class.new(
+          event_id: event.id,
+          booking_date: booking_date,
+          ticket_selections: [
+            { ticket_type_id: adult_ticket.id, quantity: -1 }
+          ]
+        ).call
+
+        expect(result).not_to be_success
+        expect(result.errors).to include("Ticket type #{adult_ticket.id} quantity must be greater than 0")
+      end.not_to change(Booking, :count)
+    end
+
     it "rejects ticket types that do not belong to the event" do
       other_event = create(:event)
       other_ticket = create(:ticket_type, event: other_event, name: "Member")

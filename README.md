@@ -140,7 +140,7 @@ mutation CreateBooking($input: BookingInput!) {
 - Does an event happen once, or can it happen on many dates?
 - Does ticket capacity reset for each date?
 - What customer details do we need to store?
-- What currency should prices use?
+- What currency should prices use, and should the API return cents or formatted prices?
 - If a booking is cancelled or refunded, should the tickets become available again?
 
 ## Evaluation Criteria

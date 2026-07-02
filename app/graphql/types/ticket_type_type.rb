@@ -2,7 +2,7 @@ module Types
   class TicketTypeType < Types::BaseObject
     field :id, ID, null: false
     field :name, String, null: false
-    field :price, Integer, null: false
+    field :price, Float, null: false
     field :price_cents, Integer, null: false
     field :capacity, Integer, null: false
     field :remaining_capacity, Integer, null: false do
@@ -18,7 +18,7 @@ module Types
     end
 
     def price
-      object.price_cents
+      object.price_cents / 100.0
     end
 
     def price_cents

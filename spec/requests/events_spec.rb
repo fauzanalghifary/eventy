@@ -15,6 +15,7 @@ RSpec.describe 'Events API', type: :request do
             ticketTypes {
               name
               price
+              priceCents
               remainingCapacity(date: $date)
             }
           }
@@ -42,9 +43,9 @@ RSpec.describe 'Events API', type: :request do
       expect(json['errors']).to be_nil
       expect(json.dig('data', 'event', 'name')).to eq('Evening Safari')
       expect(ticket_types).to contain_exactly(
-        { 'name' => 'Adult', 'price' => 2_500, 'remainingCapacity' => 3 },
-        { 'name' => 'Child', 'price' => 1_500, 'remainingCapacity' => 3 },
-        { 'name' => 'Member', 'price' => 2_000, 'remainingCapacity' => 3 }
+        { 'name' => 'Adult', 'price' => 25.0, 'priceCents' => 2_500, 'remainingCapacity' => 3 },
+        { 'name' => 'Child', 'price' => 15.0, 'priceCents' => 1_500, 'remainingCapacity' => 3 },
+        { 'name' => 'Member', 'price' => 20.0, 'priceCents' => 2_000, 'remainingCapacity' => 3 }
       )
     end
 

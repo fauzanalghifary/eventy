@@ -105,18 +105,37 @@ mutation CreateBooking($input: BookingInput!) {
 
 ### Design Decisions
 
-1. Why I chose [X approach] for handling capacity:
-2. How I prevent race conditions:
-3. Trade-offs I made given the time constraint:
+1. I prevent overbooking by locking the selected ticket types.
+   - The booking service locks the matching `ticket_types` rows before counting existing bookings. If two requests try to 
+   book the last ticket at the same time, one request waits, then checks capacity again after the first request finishes.
+
+2. The locking is correct, but it is not perfect for scale. 
+   - Because I lock the ticket type row, bookings for the same ticket type on different dates also wait for each other.
+   For this take-home I think that trade-off is acceptable. In a larger system, I would add a `ticket_type_availabilities` 
+   table so capacity can be locked per ticket type per date.
+
+3. I keep capacity simple.
+   - Each ticket type has a `capacity`, and remaining capacity is calculated from existing bookings for the requested
+   date. I did not store a separate `remaining_capacity` value because it could get out of sync with the booking records.
+
+4. I put the booking flow in `CreateBookingService`.
+   - The service checks the event, checks the selected ticket types, checks capacity, then creates the booking and booking
+   items in one transaction. This keeps the important booking logic out of GraphQL.
 
 ### What I'd Add With More Time
 
-- [ ] ...
-- [ ] ...
+- [ ] Add a `ticket_type_availabilities` table, so bookings for different dates do not block each other.
+- [ ] Add an `event_occurrences` table, so users cannot book an event on a day it does not run.
+- [ ] Store customer info and support cancelled/refunded bookings.
+- [ ] Add an `organization`/`company` table to separate data between venue operators.
 
 ### Questions I'd Ask the Product Team
 
-- ...
+- If one ticket type is sold out, should the whole booking fail?
+- Does an event happen once, or can it happen on many dates?
+- Does ticket capacity reset for each date?
+- What customer details do we need to store?
+- If a booking is cancelled or refunded, should the tickets become available again?
 
 ## Evaluation Criteria
 

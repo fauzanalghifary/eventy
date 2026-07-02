@@ -131,6 +131,7 @@ mutation CreateBooking($input: BookingInput!) {
 - [ ] Add a `ticket_type_availabilities` table, so bookings for different dates do not block each other.
 - [ ] Add an `event_occurrences` table, so users cannot book an event on a day it does not run.
 - [ ] Store customer info and support cancelled/refunded bookings.
+- [ ] Cache stable event details, while keeping ticket availability calculated live.
 - [ ] Add an `organization`/`company` table to separate data between venue operators.
 
 ### Questions I'd Ask the Product Team

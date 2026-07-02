@@ -10,7 +10,11 @@ module Types
     end
 
     def remaining_capacity(date:)
-      object.remaining_capacity_on(date)
+      booked_quantity = dataloader
+        .with(Sources::TicketTypeAvailabilitySource, date)
+        .load(object.id)
+
+      object.capacity - booked_quantity
     end
 
     def price

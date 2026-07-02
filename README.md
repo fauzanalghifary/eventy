@@ -122,6 +122,10 @@ mutation CreateBooking($input: BookingInput!) {
    - The service checks the event, checks the selected ticket types, checks capacity, then creates the booking and booking
    items in one transaction. This keeps the important booking logic out of GraphQL.
 
+5. I batch the GraphQL availability counts to avoid N+1 queries.
+   - `remainingCapacity` uses GraphQL dataloader, so an event with many ticket types does not run one booking count query
+   per ticket type.
+
 ### What I'd Add With More Time
 
 - [ ] Add a `ticket_type_availabilities` table, so bookings for different dates do not block each other.

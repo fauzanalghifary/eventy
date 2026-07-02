@@ -29,4 +29,25 @@ RSpec.describe TicketType, type: :model do
       expect(ticket_type.remaining_capacity_on(Date.new(2026, 7, 10))).to eq(5)
     end
   end
+
+  describe ".booked_quantities_on" do
+    it "returns booked quantities grouped by ticket type for the given date" do
+      event = create(:event)
+      adult_ticket = create(:ticket_type, event: event, name: "Adult")
+      child_ticket = create(:ticket_type, event: event, name: "Child")
+      booking = create(:booking, event: event, booking_date: Date.new(2026, 7, 10))
+      other_date_booking = create(:booking, event: event, booking_date: Date.new(2026, 7, 11))
+
+      create(:booking_item, booking: booking, ticket_type: adult_ticket, quantity: 2)
+      create(:booking_item, booking: booking, ticket_type: child_ticket, quantity: 1)
+      create(:booking_item, booking: other_date_booking, ticket_type: adult_ticket, quantity: 1)
+
+      expect(
+        described_class.booked_quantities_on(
+          ticket_type_ids: [adult_ticket.id, child_ticket.id],
+          booking_date: Date.new(2026, 7, 10)
+        )
+      ).to eq(adult_ticket.id => 2, child_ticket.id => 1)
+    end
+  end
 end

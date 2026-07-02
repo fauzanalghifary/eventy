@@ -5,12 +5,10 @@ module Sources
     end
 
     def fetch(ticket_type_ids)
-      booked_quantities = BookingItem
-        .joins(:booking)
-        .where(ticket_type_id: ticket_type_ids)
-        .where(bookings: { booking_date: date })
-        .group(:ticket_type_id)
-        .sum(:quantity)
+      booked_quantities = TicketType.booked_quantities_on(
+        ticket_type_ids: ticket_type_ids,
+        booking_date: date
+      )
 
       ticket_type_ids.map { |ticket_type_id| booked_quantities.fetch(ticket_type_id, 0) }
     end

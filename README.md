@@ -23,6 +23,44 @@ This starter repository includes:
 - RSpec, FactoryBot, and testing gems configured
 - Basic project structure
 
+## Setup
+
+Requirements:
+
+- Ruby 3.4.1
+- PostgreSQL
+
+Install dependencies:
+
+```bash
+bundle install
+```
+
+Prepare the database:
+
+```bash
+bin/rails db:prepare
+bin/rails db:seed
+```
+
+Run the test suite:
+
+```bash
+bundle exec rspec
+```
+
+Start the server:
+
+```bash
+bin/rails server
+```
+
+GraphQL endpoint:
+
+```text
+POST /graphql
+```
+
 ## What You Need to Implement
 
 ### Core Models to Create

@@ -105,7 +105,7 @@ mutation CreateBooking($input: BookingInput!) {
 
 ### Design Decisions
 
-1. I prevent overbooking by locking the selected ticket types.
+1. I use pessimistic locking to prevent overbooking.
    - The booking service locks the matching `ticket_types` rows before counting existing bookings. If two requests try to 
    book the last ticket at the same time, one request waits, then checks capacity again after the first request finishes.
 

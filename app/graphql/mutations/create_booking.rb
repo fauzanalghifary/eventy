@@ -11,7 +11,7 @@ module Mutations
     def resolve(input:)
       result = CreateBookingService.new(
         event_id: input[:event_id],
-        booking_date: input[:booking_date],
+        booking_date: input[:date],
         ticket_selections: input[:ticket_selections].map do |selection|
           {
             ticket_type_id: selection[:ticket_type_id],

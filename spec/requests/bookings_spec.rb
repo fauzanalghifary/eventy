@@ -26,7 +26,7 @@ RSpec.describe 'Bookings API', type: :request do
           variables: {
             input: {
               eventId: event.id,
-              bookingDate: booking_date.iso8601,
+              date: booking_date.iso8601,
               ticketSelections: [
                 { ticketTypeId: adult_ticket.id, quantity: 1 }
               ]
@@ -53,7 +53,7 @@ RSpec.describe 'Bookings API', type: :request do
           variables: {
             input: {
               eventId: event.id,
-              bookingDate: booking_date.iso8601,
+              date: booking_date.iso8601,
               ticketSelections: [
                 { ticketTypeId: adult_ticket.id, quantity: 1 }
               ]

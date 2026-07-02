@@ -109,7 +109,7 @@ mutation CreateBooking($input: BookingInput!) {
    - The booking service locks the matching `ticket_types` rows before counting existing bookings. If two requests try to 
    book the last ticket at the same time, one request waits, then checks capacity again after the first request finishes.
 
-2. The locking is correct, but it is not perfect for scale. 
+2. I chose simple locking with a known trade-off.
    - Because I lock the ticket type row, bookings for the same ticket type on different dates also wait for each other.
    For this take-home I think that trade-off is acceptable. In a larger system, I would add a `ticket_type_availabilities` 
    table so capacity can be locked per ticket type per date.

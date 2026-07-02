@@ -21,9 +21,18 @@ module Types
     # Add root-level fields here.
     # They will be entry points for queries on your schema.
 
-    # TODO: Add your queries here
+    field :event, Types::EventType, null: true,
+      description: "Find an event by ID" do
+      argument :id, ID, required: true
+    end
+
+    def event(id:)
+      Event.find_by(id: id)
+    end
+
     field :venues, [ Types::VenueType ], null: false,
       description: "All venues"
+
     def venues
       Venue.all
     end
